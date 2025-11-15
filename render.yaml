@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: life-tracker-web
+    runtime: docker
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: VITE_API_BASE_URL
+        value: https://life-tracker-server.onrender.com
+    autoDeploy: true
+  - type: web
+    name: life-tracker-server
+    runtime: docker
+    dockerfilePath: server/Dockerfile
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+    healthCheckPath: /api/health
+    autoDeploy: true

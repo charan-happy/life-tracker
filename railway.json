@@ -1,0 +1,19 @@
+{
+  "services": [
+    {
+      "name": "life-tracker-server",
+      "dockerfilePath": "server/Dockerfile",
+      "env": {
+        "DATABASE_URL": "${DATABASE_URL}"
+      }
+    },
+    {
+      "name": "life-tracker-web",
+      "dockerfilePath": "Dockerfile",
+      "env": {
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}",
+        "VITE_API_BASE_URL": "https://life-tracker-server.up.railway.app"
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA redirect handling
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Optional: set via Netlify UI or netlify CLI for secrets
+# [context.production.environment]
+#   GEMINI_API_KEY = "YOUR_KEY"
+#   VITE_API_BASE_URL = "https://your-backend.example.com"
