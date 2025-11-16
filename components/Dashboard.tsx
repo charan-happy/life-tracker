@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { MOTIVATIONAL_QUOTES } from '../constants';
-import { getLifeAnalysis } from '../services/geminiService';
+import { getLifeAnalysis } from '@/services/charanService';
 import type { TimeFrameData } from '../types';
 import { SparklesIcon } from './icons/Icon';
 

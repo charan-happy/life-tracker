@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import type { Habit } from '../types';
 import { PlusIcon, SparklesIcon, TrashIcon } from './icons/Icon';
-import { getHabitSuggestions } from '../services/geminiService';
+import { getHabitSuggestions } from '@/services/charanService';
 
 const DEFAULT_HABITS: Habit[] = [
     { id: 'h1', name: 'Exercise for 30 minutes', goal: 5, progress: Array(7).fill(false) },

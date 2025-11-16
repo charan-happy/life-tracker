@@ -104,7 +104,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView })
           </div>
           {syncMsg && <p className="text-[11px] text-gray-400">{syncMsg}</p>}
         </div>
-        <p className="text-center">Powered by Gemini</p>
+        <p className="text-center">Powered by charan</p>
       </div>
     </nav>
   );
