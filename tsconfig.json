@@ -27,5 +27,8 @@
     "**/*.ts",
     "**/*.tsx",
     "vite-env.d.ts"
+  ],
+  "exclude": [
+    "server/**/*" 
   ]
 }

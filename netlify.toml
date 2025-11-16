@@ -1,5 +1,6 @@
 [build]
-  command = "npm run build"
+  # Force Vite-only build to avoid compiling backend code on Netlify
+  command = "npx vite build"
   publish = "dist"
 
 [build.environment]
