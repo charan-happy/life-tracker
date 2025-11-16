@@ -5,6 +5,7 @@ import { Dashboard } from './components/Dashboard';
 import { IdeasView } from './components/IdeasView';
 import { TimeFrameView } from './components/TimeFrameView';
 import { HabitTrackerView } from './components/HabitTrackerView';
+import { DailyView } from './components/DailyView';
 import type { View } from './types';
 
 const App: React.FC = () => {
@@ -16,6 +17,8 @@ const App: React.FC = () => {
         return <Dashboard />;
       case 'Ideas':
         return <IdeasView />;
+      case 'Daily':
+        return <DailyView />;
       case 'Weekly':
         return <TimeFrameView period="Weekly" />;
       case 'Monthly':

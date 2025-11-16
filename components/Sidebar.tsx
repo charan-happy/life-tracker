@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import type { View } from '../types';
+import type { View, DailyTask } from '../types';
 import { HomeIcon, LightbulbIcon, CalendarIcon, CheckCircleIcon, SparklesIcon } from './icons/Icon';
 import { loadCloudData, saveCloudData } from '../services/api';
 
@@ -12,6 +12,7 @@ interface SidebarProps {
 // Fix: Changed JSX.Element to React.ReactNode to resolve "Cannot find namespace 'JSX'" error.
 const navItems: { view: View; label: string; icon: React.ReactNode }[] = [
   { view: 'Dashboard', label: 'Dashboard', icon: <HomeIcon /> },
+  { view: 'Daily', label: 'Daily', icon: <CalendarIcon /> },
   { view: 'Ideas', label: 'Ideas', icon: <LightbulbIcon /> },
   { view: 'Weekly', label: 'Weekly', icon: <CalendarIcon /> },
   { view: 'Monthly', label: 'Monthly', icon: <CalendarIcon /> },
@@ -22,6 +23,7 @@ const navItems: { view: View; label: string; icon: React.ReactNode }[] = [
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView }) => {
   const [userId, setUserId] = useState('');
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
+  const [dailyPending, setDailyPending] = useState<number>(0);
 
   useEffect(() => {
     const existing = localStorage.getItem('life-tracker-user-id');
@@ -33,6 +35,36 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView })
     setUserId(id);
     localStorage.setItem('life-tracker-user-id', id);
   };
+
+  const todayStr = () => new Date().toISOString().slice(0, 10);
+  const recomputeDailyCount = () => {
+    try {
+      const raw = localStorage.getItem('life-tracker-daily-tasks');
+      const tasks: DailyTask[] = raw ? JSON.parse(raw) : [];
+      const today = todayStr();
+      const pending = tasks.filter(
+        t => t.status === 'open' && !t.history.some(h => h.date === today && h.status === 'done')
+      );
+      setDailyPending(pending.length);
+    } catch {
+      setDailyPending(0);
+    }
+  };
+
+  useEffect(() => {
+    // initialize count and subscribe to changes from DailyView
+    recomputeDailyCount();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === 'life-tracker-daily-tasks') recomputeDailyCount();
+    };
+    const onCustom = () => recomputeDailyCount();
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('daily-tasks-updated', onCustom as EventListener);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('daily-tasks-updated', onCustom as EventListener);
+    };
+  }, []);
 
   const handleSave = async () => {
     if (!userId) return setSyncMsg('Set a user id first');
@@ -77,15 +109,30 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView })
           {navItems.map((item) => (
             <li key={item.view}>
               <button
-                onClick={() => setCurrentView(item.view)}
-                className={`w-full flex items-center space-x-3 p-3 my-1 rounded-lg transition-colors duration-200 ${
+                onClick={() => {
+                  setCurrentView(item.view);
+                  if (item.view === 'Daily') recomputeDailyCount();
+                }}
+                className={`w-full flex items-center p-3 my-1 rounded-lg transition-colors duration-200 ${
                   currentView === item.view
                     ? 'btn-gradient text-white'
                     : 'text-gray-400 hover:bg-gray-700 hover:text-white'
                 }`}
               >
-                {item.icon}
+                <span className="relative mr-3">
+                  {item.icon}
+                  {item.view === 'Daily' && dailyPending > 0 && (
+                    <span className="absolute -top-1 -right-1 inline-flex items-center justify-center rounded-full bg-pink-600 text-white text-[10px] min-w-[16px] h-4 px-1 md:hidden">
+                      {dailyPending}
+                    </span>
+                  )}
+                </span>
                 <span className="hidden md:block">{item.label}</span>
+                {item.view === 'Daily' && dailyPending > 0 && (
+                  <span className="ml-auto hidden md:inline-flex items-center justify-center rounded-full bg-pink-600 text-white text-xs px-2 py-0.5">
+                    {dailyPending}
+                  </span>
+                )}
               </button>
             </li>
           ))}

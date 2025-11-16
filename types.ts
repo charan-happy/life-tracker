@@ -1,5 +1,5 @@
 
-export type View = 'Dashboard' | 'Ideas' | 'Weekly' | 'Monthly' | 'Yearly' | 'Habits';
+export type View = 'Dashboard' | 'Ideas' | 'Daily' | 'Weekly' | 'Monthly' | 'Yearly' | 'Habits';
 
 export interface Idea {
   id: string;
@@ -45,3 +45,17 @@ export interface Habit {
 }
 
 export type ReviewCategory = 'achievements' | 'challenges' | 'reflections' | 'learnings' | 'people';
+
+export interface DailyTaskHistoryEntry {
+  date: string; // YYYY-MM-DD
+  progress?: string;
+  status: 'open' | 'done';
+}
+
+export interface DailyTask {
+  id: string;
+  title: string;
+  createdAt: string; // ISO
+  status: 'open' | 'done';
+  history: DailyTaskHistoryEntry[];
+}
